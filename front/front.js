@@ -144,7 +144,7 @@ shoppingCartProducts.addEventListener("click", (e) => {
   const cartId = e.target.getAttribute("data-Id");
   if (cartId === null) {
     return;
-  } else {
+  }else {
     axios
       .delete(
         `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts/${cartId}`
