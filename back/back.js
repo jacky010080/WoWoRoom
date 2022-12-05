@@ -31,7 +31,7 @@ function renderOrder() {
     orderData.forEach(item => {
         let productsTitle = "";
         item.products.forEach(item => {
-            productsTitle += `${item.title}<br>`;
+            productsTitle += `${item.title}`;
         })
         let orderStatus = "";
         if(item.paid === true){
@@ -52,7 +52,7 @@ function renderOrder() {
         </td>
         <td>2021/03/08</td>
         <td class="orderStatus">
-          <a href="#" class="orderIsPaid" data-status=${item.paid} data-id=${item.id}>${orderStatus}</a>
+          <a href="#" class="paid" data-status=${orderStatus} data-id=${item.id}>${orderStatus}</a>
         </td>
         <td>
           <input type="button" class="delSingleOrder-Btn" value="刪除" data-id=${item.id}>
@@ -62,12 +62,25 @@ function renderOrder() {
     orderList.innerHTML = str;
 }
 
+// 訂單狀態與操作
+orderList.addEventListener("click", e => {
+  e.preventDefault();
+  const targetClass = e.target.getAttribute("class");
+  const orderId = e.target.getAttribute("data-id");
+  if (targetClass === "paid") {
+    let status = e.target.getAttribute("data-status");
+    editOrderList(orderId,status);
+  } else if (targetClass === "delSingleOrder-Btn") {
+    deleteOrderItem(orderId);
+  }
+})
+
 // 修改訂單狀態
 function editOrderList(orderId,status) {
   let newStatus;
-  if (status === true) {
+  if (status === "已處理") {
     newStatus = false;
-  }else {
+  } else if (status === "未處理") {
     newStatus = true;
   }
   axios.put(`https://livejs-api.hexschool.io/api/livejs/v1/admin/${api_path}/orders`,
@@ -82,23 +95,14 @@ function editOrderList(orderId,status) {
         'Authorization': token
       }
     })
-    .then(function (response) {
+    .then(response => {
+      init();
       alert("修改訂單狀態成功");
     })
+    .catch(error => {
+      alert("修改訂單狀態失敗");
+    })
 }
-
-// 訂單狀態與操作
-orderList.addEventListener("click", e => {
-  e.preventDefault();
-  const targetClass = e.target.getAttribute("class");
-  const orderId = e.target.getAttribute("data-id");
-  if (targetClass === "orderIsPaid") {
-    let status = e.target.getAttribute("data-status");
-    editOrderList(orderId,status);
-  }else if (targetClass === "delSingleOrder-Btn") {
-    deleteCartItem(orderId);
-  }
-})
 
 // 刪除特定訂單
 function deleteOrderItem(orderId) {
@@ -109,10 +113,11 @@ function deleteOrderItem(orderId) {
       }
     })
     .then(response => {
+      init();
       alert("成功刪除此筆訂單");
     })
     .catch(response => {
-      alert("刪除訂單失敗");
+      alert("刪除此筆訂單失敗");
     })
 }
 
@@ -126,6 +131,7 @@ discardAllBtn.addEventListener("click", e => {
       }
     })
     .then(response => {
+      init();
       alert("成功清除所有訂單");
     })
     .catch(response => {
@@ -134,21 +140,21 @@ discardAllBtn.addEventListener("click", e => {
 })
 
 // C3.js
-let chart = c3.generate({
-    bindto: '#chart', // HTML 元素綁定
-    data: {
-        type: "pie",
-        columns: [
-        ['Louvre 雙人床架', 1],
-        ['Antony 雙人床架', 2],
-        ['Anty 雙人床架', 3],
-        ['其他', 4],
-        ],
-        colors:{
-            "Louvre 雙人床架":"#DACBFF",
-            "Antony 雙人床架":"#9D7FEA",
-            "Anty 雙人床架": "#5434A7",
-            "其他": "#301E5F",
-        }
-    },
-});
+// let chart = c3.generate({
+//     bindto: '#chart', // HTML 元素綁定
+//     data: {
+//         type: "pie",
+//         columns: [
+//         ['Louvre 雙人床架', 1],
+//         ['Antony 雙人床架', 2],
+//         ['Anty 雙人床架', 3],
+//         ['其他', 4],
+//         ],
+//         colors:{
+//             "Louvre 雙人床架":"#DACBFF",
+//             "Antony 雙人床架":"#9D7FEA",
+//             "Anty 雙人床架": "#5434A7",
+//             "其他": "#301E5F",
+//         }
+//     },
+// });
