@@ -17,7 +17,9 @@ function getOrderList() {
     })
     .then(response => {
         orderData = response.data.orders;
+        console.log(orderData);
         renderOrder();
+        renderChart();
     })
     .catch(response => {
       alert("目前沒有訂單唷！");
@@ -140,21 +142,27 @@ discardAllBtn.addEventListener("click", e => {
 })
 
 // C3.js
-// let chart = c3.generate({
-//     bindto: '#chart', // HTML 元素綁定
-//     data: {
-//         type: "pie",
-//         columns: [
-//         ['Louvre 雙人床架', 1],
-//         ['Antony 雙人床架', 2],
-//         ['Anty 雙人床架', 3],
-//         ['其他', 4],
-//         ],
-//         colors:{
-//             "Louvre 雙人床架":"#DACBFF",
-//             "Antony 雙人床架":"#9D7FEA",
-//             "Anty 雙人床架": "#5434A7",
-//             "其他": "#301E5F",
-//         }
-//     },
-// });
+function renderChart() {
+  let chartData = {};
+  orderData.forEach(item => {
+    item.products.forEach(item => {
+      chartData[item.category] === undefined ? chartData[item.category] = 1 : chartData[item.category]++;
+    })
+  })
+  let chartArr = [];
+  Object.keys(chartData).forEach((item,index) => {
+    chartArr.push([item,Object.values(chartData)[index]])
+  })
+  let chart = c3.generate({
+    bindto: '#chart', 
+    data: {
+        type: "pie",
+        columns: chartArr,
+        colors:{
+            "床架":"#DACBFF",
+            "窗簾":"#9D7FEA",
+            "收納": "#5434A7",
+        }
+    },
+  });
+}
