@@ -1,5 +1,10 @@
 const api_path = "jacky010080";
 const token = "DMnVPoozNsYpMEmojlhe0EzeDSw1";
+const verify = {
+  headers: {
+    'Authorization': token
+  }
+};
 let orderData;
 
 function init() {
@@ -10,11 +15,7 @@ init();
 // 取得訂單列表
 function getOrderList() {
   axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/admin/${api_path}/orders`,
-    {
-      headers: {
-        'Authorization': token
-      }
-    })
+    verify)
     .then(response => {
         orderData = response.data.orders;
         console.log(orderData);
@@ -92,11 +93,7 @@ function editOrderList(orderId,status) {
         "paid": newStatus
       }
     },
-    {
-      headers: {
-        'Authorization': token
-      }
-    })
+    verify)
     .then(response => {
       init();
       alert("修改訂單狀態成功");
@@ -109,11 +106,7 @@ function editOrderList(orderId,status) {
 // 刪除特定訂單
 function deleteOrderItem(orderId) {
   axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/admin/${api_path}/orders/${orderId}`,
-    {
-      headers: {
-        'Authorization': token
-      }
-    })
+  verify)
     .then(response => {
       init();
       alert("成功刪除此筆訂單");
@@ -127,11 +120,7 @@ function deleteOrderItem(orderId) {
 const discardAllBtn = document.querySelector(".discardAllBtn");
 discardAllBtn.addEventListener("click", e => {
   axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/admin/${api_path}/orders`,
-    {
-      headers: {
-        'Authorization': token
-      }
-    })
+  verify)
     .then(response => {
       init();
       alert("成功清除所有訂單");
